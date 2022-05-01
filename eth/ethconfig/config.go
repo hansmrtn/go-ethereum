@@ -88,11 +88,12 @@ var Defaults = Config{
 		GasPrice: big.NewInt(params.GWei),
 		Recommit: 3 * time.Second,
 	},
-	TxPool:        core.DefaultTxPoolConfig,
-	RPCGasCap:     50000000,
-	RPCEVMTimeout: 5 * time.Second,
-	GPO:           FullNodeGPO,
-	RPCTxFeeCap:   1, // 1 ether
+	TxPool:              core.DefaultTxPoolConfig,
+	RPCGasCap:           50000000,
+	RPCEVMTimeout:       5 * time.Second,
+	RPCBatchConcurrency: 2,
+	GPO:                 FullNodeGPO,
+	RPCTxFeeCap:         1, // 1 ether
 }
 
 func init() {
@@ -198,6 +199,10 @@ type Config struct {
 	// RPCTxFeeCap is the global transaction fee(price * gaslimit) cap for
 	// send-transction variants. The unit is ether.
 	RPCTxFeeCap float64
+
+	// RPCBacthConcurrency is the maximum spawned requests a single batch
+	// request can have
+	RPCBatchConcurrency int
 
 	// Checkpoint is a hardcoded checkpoint which can be nil.
 	Checkpoint *params.TrustedCheckpoint `toml:",omitempty"`

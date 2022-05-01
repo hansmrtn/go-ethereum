@@ -57,6 +57,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		RPCGasCap                       uint64
 		RPCEVMTimeout                   time.Duration
 		RPCTxFeeCap                     float64
+		RPCBacthConcurrency             int
 		Checkpoint                      *params.TrustedCheckpoint      `toml:",omitempty"`
 		CheckpointOracle                *params.CheckpointOracleConfig `toml:",omitempty"`
 		OverrideArrowGlacier            *big.Int                       `toml:",omitempty"`

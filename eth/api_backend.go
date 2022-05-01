@@ -325,6 +325,9 @@ func (b *EthAPIBackend) RPCEVMTimeout() time.Duration {
 func (b *EthAPIBackend) RPCTxFeeCap() float64 {
 	return b.eth.config.RPCTxFeeCap
 }
+func (b *EthAPIBackend) RPCBatchConcurrency() int {
+	return b.eth.config.RPCBatchConcurrency
+}
 
 func (b *EthAPIBackend) BloomStatus() (uint64, uint64) {
 	sections, _, _ := b.eth.bloomIndexer.Sections()
