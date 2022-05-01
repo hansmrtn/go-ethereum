@@ -189,6 +189,7 @@ var (
 		utils.RPCGlobalGasCapFlag,
 		utils.RPCGlobalEVMTimeoutFlag,
 		utils.RPCGlobalTxFeeCapFlag,
+		utils.RPCGlobalBatchConcurrencyFlag,
 		utils.AllowUnprotectedTxs,
 	}
 

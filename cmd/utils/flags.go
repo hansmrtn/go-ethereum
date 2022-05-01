@@ -529,6 +529,11 @@ var (
 		Usage: "Sets a cap on transaction fee (in ether) that can be sent via the RPC APIs (0 = no cap)",
 		Value: ethconfig.Defaults.RPCTxFeeCap,
 	}
+	RPCGlobalBatchConcurrencyFlag = cli.IntFlag{
+		Name:  "rpc.batch.concurrency",
+		Usage: "Sets the maximum number of concurrent requests a batch request can spawn.",
+		Value: ethconfig.Defaults.RPCBatchConcurrency,
+	}
 	// Authenticated RPC HTTP settings
 	AuthListenFlag = cli.StringFlag{
 		Name:  "authrpc.addr",
@@ -1665,6 +1670,17 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	if ctx.GlobalIsSet(RPCGlobalTxFeeCapFlag.Name) {
 		cfg.RPCTxFeeCap = ctx.GlobalFloat64(RPCGlobalTxFeeCapFlag.Name)
 	}
+
+	///
+	////////
+	///////////
+	if ctx.GlobalIsSet(RPCGlobalBatchConcurrencyFlag.Name) {
+		cfg.RPCBatchConcurrency = ctx.GlobalInt(RPCGlobalBatchConcurrencyFlag.Name)
+	}
+	//////////
+	///////
+	///
+
 	if ctx.GlobalIsSet(NoDiscoverFlag.Name) {
 		cfg.EthDiscoveryURLs, cfg.SnapDiscoveryURLs = []string{}, []string{}
 	} else if ctx.GlobalIsSet(DNSDiscoveryFlag.Name) {
