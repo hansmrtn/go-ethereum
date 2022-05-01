@@ -62,8 +62,9 @@ type handler struct {
 	log            log.Logger
 	allowSubscribe bool
 
-	subLock    sync.Mutex
-	serverSubs map[ID]*Subscription
+	subLock          sync.Mutex
+	serverSubs       map[ID]*Subscription
+	batchConcurrency int
 }
 
 type callProc struct {
@@ -74,16 +75,17 @@ type callProc struct {
 func newHandler(connCtx context.Context, conn jsonWriter, idgen func() ID, reg *serviceRegistry) *handler {
 	rootCtx, cancelRoot := context.WithCancel(connCtx)
 	h := &handler{
-		reg:            reg,
-		idgen:          idgen,
-		conn:           conn,
-		respWait:       make(map[string]*requestOp),
-		clientSubs:     make(map[string]*ClientSubscription),
-		rootCtx:        rootCtx,
-		cancelRoot:     cancelRoot,
-		allowSubscribe: true,
-		serverSubs:     make(map[ID]*Subscription),
-		log:            log.Root(),
+		reg:              reg,
+		idgen:            idgen,
+		conn:             conn,
+		respWait:         make(map[string]*requestOp),
+		clientSubs:       make(map[string]*ClientSubscription),
+		rootCtx:          rootCtx,
+		cancelRoot:       cancelRoot,
+		allowSubscribe:   true,
+		serverSubs:       make(map[ID]*Subscription),
+		log:              log.Root(),
+		batchConcurrency: 3,
 	}
 	if conn.remoteAddr() != "" {
 		h.log = h.log.New("conn", conn.remoteAddr())
@@ -102,7 +104,7 @@ func (h *handler) handleBatch(msgs []*jsonrpcMessage) {
 		return
 	}
 	// TODO: WIP Implement the cli flag and default (3)
-	if len(msgs) > 3 {
+	if len(msgs) > h.batchConcurrency {
 		h.startCallProc(func(cp *callProc) {
 			h.conn.writeJSON(cp.ctx, errorMessage(&invalidRequestError{"batch too large"}))
 		})
