@@ -144,6 +144,49 @@ func TestClientBatchRequest(t *testing.T) {
 	}
 }
 
+func TestClientBatchRequestOverload(t *testing.T) {
+	server := newTestServer()
+	defer server.Stop()
+	client := DialInProc(server)
+	defer client.Close()
+
+	batch := []BatchElem{
+		{
+			Method: "test_echo",
+			Args:   []interface{}{"hello", 10, &echoArgs{"world"}},
+			Result: new(echoResult),
+		},
+		{
+			Method: "test_echo",
+			Args:   []interface{}{"hello2", 11, &echoArgs{"world"}},
+			Result: new(echoResult),
+		},
+		{
+			Method: "no_such_method",
+			Args:   []interface{}{1, 2, 3},
+			Result: new(int),
+		},
+		{
+			Method: "no_such_method2",
+			Args:   []interface{}{4, 5, 6},
+			Result: new(int),
+		},
+	}
+	if err := client.BatchCall(batch); err != nil {
+		t.Fatal(err)
+	}
+	// fmt.Println(batch)
+	// wantResult := &jsonError{Code: -32600, Message: "batch too large"}
+
+	// // echoResult{
+	// // 	Error: &jsonError{Code: -32600, Message: "batch too large"},
+	// // }
+
+	// if !reflect.DeepEqual(batch, wantResult) {
+	// 	t.Errorf("batch results mismatch:\ngot %swant %s", spew.Sdump(batch), spew.Sdump(wantResult))
+	// }
+}
+
 func TestClientNotify(t *testing.T) {
 	server := newTestServer()
 	defer server.Stop()
