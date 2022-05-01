@@ -102,6 +102,13 @@ func (h *handler) handleBatch(msgs []*jsonrpcMessage) {
 		return
 	}
 
+	if len(msgs) > 2 { // TODO: MAKE it flagged
+		h.startCallProc(func(cp *callProc) {
+			h.conn.writeJSON(cp.ctx, errorMessage(&invalidRequestError{"batch too large"}))
+		})
+		return
+	}
+
 	// Handle non-call messages first:
 	calls := make([]*jsonrpcMessage, 0, len(msgs))
 	for _, msg := range msgs {
