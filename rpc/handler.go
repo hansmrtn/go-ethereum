@@ -101,8 +101,8 @@ func (h *handler) handleBatch(msgs []*jsonrpcMessage) {
 		})
 		return
 	}
-
-	if len(msgs) > 2 { // TODO: MAKE it flagged
+	// TODO: WIP Implement the cli flag and default (3)
+	if len(msgs) > 3 {
 		h.startCallProc(func(cp *callProc) {
 			h.conn.writeJSON(cp.ctx, errorMessage(&invalidRequestError{"batch too large"}))
 		})

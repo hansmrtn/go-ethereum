@@ -91,7 +91,7 @@ var Defaults = Config{
 	TxPool:              core.DefaultTxPoolConfig,
 	RPCGasCap:           50000000,
 	RPCEVMTimeout:       5 * time.Second,
-	RPCBatchConcurrency: 2,
+	RPCBatchConcurrency: 3,
 	GPO:                 FullNodeGPO,
 	RPCTxFeeCap:         1, // 1 ether
 }
