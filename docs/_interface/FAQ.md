@@ -66,3 +66,10 @@ You however should be able to run a light client on an HDD with minimal impact o
 **Q: When I try to use the --password command line flag, I get the error "Could not decrypt key with given passphrase" but the password is correct. Why does this error appear?**
 
 **A:** Especially if the password file was created on Windows, it may have a Byte Order Mark or other special encoding that the go-ethereum client doesn't currently recognize.  You can change this behavior with a PowerShell command like `echo "mypasswordhere" | out-file test.txt -encoding ASCII`.  Additional details and/or any updates on more robust handling are at <https://github.com/ethereum/go-ethereum/issues/19905>.
+
+
+---
+
+**Q: What is the difference between the --gcmode=full and --gcmode=archive, and how does it work?**
+
+**A:** The current default mode of garbage collection for Geth is full, where the state for the last 128 blocks is kept stored in memory. Most states are garbage collected. If you are running a service relying on transaction tracing without an archive node (`--gcmode=archive`), you need to trace within this window! Alternatively, specify the `"reexec"` tracer option to allow regenerating historical state and comes with the overhead of state-regeneration. If you need data from blocks before the last 128 blocks, you'll want to use archive mode. Note that running a Geth archive node will require significantly more disk storage than a full node for sync; however, chain-data storage will increase at the same rate for both.
